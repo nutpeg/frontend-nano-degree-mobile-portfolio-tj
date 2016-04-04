@@ -32,7 +32,17 @@ form {
 .mover {
   position: fixed;
   width: 256px;
+  /*z-index: -1;*/
+  /*will-change: transform;*/
+}
+
+div[id^="moving-pizza-set-"] {
+  position: fixed;
   z-index: -1;
+  left: 0;
+  top: 0;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .randomPizzaContainer {

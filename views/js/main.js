@@ -421,39 +421,28 @@ var resizePizzas = function(size) {
 
   changeSliderLabel(size);
 
-   // Returns the size difference to change a pizza element from one size to another. Called by changePizzaSlices(size).
-  function determineDx (elem, size) {
-    var oldWidth = elem.offsetWidth;
-    var windowWidth = document.querySelector("#randomPizzas").offsetWidth;
-    var oldSize = oldWidth / windowWidth;
-
-    // TODO: change to 3 sizes? no more xl?
-    // Changes the slider value to a percent width
-    function sizeSwitcher (size) {
-      switch(size) {
-        case "1":
-          return 0.25;
-        case "2":
-          return 0.3333;
-        case "3":
-          return 0.5;
-        default:
-          console.log("bug in sizeSwitcher");
-      }
+  // TODO: change to 3 sizes? no more xl?
+  // Returns the appropriate width ratio for each pizza image.
+  function sizeSwitcher (size) {
+    switch(size) {
+      case "1":
+        return 25;
+      case "2":
+        return 33.333;
+      case "3":
+        return 50;
+      default:
+        console.log("bug in sizeSwitcher");
     }
-
-    var newSize = sizeSwitcher(size);
-    var dx = (newSize - oldSize) * windowWidth;
-
-    return dx;
   }
 
-  // Iterates through pizza elements on the page and changes their widths
+  // Iterates through pizza elements on the page and changes their widths.
   function changePizzaSizes(size) {
-    for (var i = 0; i < document.querySelectorAll(".randomPizzaContainer").length; i++) {
-      var dx = determineDx(document.querySelectorAll(".randomPizzaContainer")[i], size);
-      var newwidth = (document.querySelectorAll(".randomPizzaContainer")[i].offsetWidth + dx) + 'px';
-      document.querySelectorAll(".randomPizzaContainer")[i].style.width = newwidth;
+    var allPizzas = document.querySelectorAll(".randomPizzaContainer");
+    var newWidth = sizeSwitcher(size);
+    // Set new width for each pizza image. Done at end of process, after all style calcs.
+    for (var i = 0; i < allPizzas.length; i++) {
+      allPizzas[i].style.width = newWidth + '%';
     }
   }
 
@@ -468,9 +457,10 @@ var resizePizzas = function(size) {
 
 window.performance.mark("mark_start_generating"); // collect timing data
 
-// This for-loop actually creates and appends all of the pizzas when the page loads
+// This for-
+// loop actually creates and appends all of the pizzas when the page loads
+var pizzasDiv = document.getElementById("randomPizzas");
 for (var i = 2; i < 100; i++) {
-  var pizzasDiv = document.getElementById("randomPizzas");
   pizzasDiv.appendChild(pizzaElementGenerator(i));
 }
 
@@ -498,15 +488,19 @@ function logAverageFrame(times) {   // times is the array of User Timing measure
 // https://www.igvita.com/slides/2012/devtools-tips-and-tricks/jank-demo.html
 
 // Moves the sliding background pizzas based on scroll position
-function updatePositions() {
+function updatePositions(e) {
   frame++;
   window.performance.mark("mark_start_frame");
 
-  var items = document.querySelectorAll('.mover');
-  for (var i = 0; i < items.length; i++) {
-    var phase = Math.sin((document.body.scrollTop / 1250) + (i % 5));
-    items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
+  // Determine scroll position, and modify for later use.
+  var bodyPosition = document.body.scrollTop / 1250;
+  // Set x position using `transform` for each moving pizza image set
+  for (var j = 0; j < 5; j++) {
+    var item = document.querySelector('#moving-pizza-set-' + j);
+    var phase = Math.sin(bodyPosition + (j % 5));
+    item.style.transform = 'translateX(' + 100 * phase + 'px)';
   }
+
 
   // User Timing API to the rescue again. Seriously, it's worth learning.
   // Super easy to create custom metrics.
@@ -521,19 +515,61 @@ function updatePositions() {
 // runs updatePositions on scroll
 window.addEventListener('scroll', updatePositions);
 
+
+// Create the 5 divs the contain a set of moving pizza images.
+function createMovingPizzaContainers() {
+  var movingPizzasContainers = "";
+  for (var i = 0; i < 5; i++) {
+    movingPizzasContainers = movingPizzasContainers + '<div id="moving-pizza-set-' + i + '"></div>';
+  }
+  // Add moving pizza container to the DOM.
+  document.querySelector("#movingPizzas1").insertAdjacentHTML('beforeend', movingPizzasContainers);
+}
+
+// Helper function to create DOM nodes.
+function createMovingPizzaSet(id, elem) {
+  document.querySelector(id).insertAdjacentHTML('beforeend', elem);
+}
+
 // Generates the sliding pizzas when the page loads.
 document.addEventListener('DOMContentLoaded', function() {
+  // Create 5 containers each holding a set of images that move in exactly the same phase.
+  createMovingPizzaContainers();
+
   var cols = 8;
   var s = 256;
-  for (var i = 0; i < 200; i++) {
-    var elem = document.createElement('img');
-    elem.className = 'mover';
-    elem.src = "images/pizza.png";
-    elem.style.height = "100px";
-    elem.style.width = "73.333px";
-    elem.basicLeft = (i % cols) * s;
-    elem.style.top = (Math.floor(i / cols) * s) + 'px';
-    document.querySelector("#movingPizzas1").appendChild(elem);
+  // Set up starting template for moving pizza images.
+  var movingPizzaTemplate = '<img class="mover" src="images/pizza.png" style="height: 100px;' +
+      ' width: 73.333px; top: ';
+
+  // Generate 200 moving pizza images, and place them in 5 sets, each set being a 'div'.
+  for (var j = 0; j < 200; j++) {
+    // Create the HTML for each image, setting the top and left position styles.
+    var topDistance = (Math.floor(j / cols) * s) + 'px; ';
+    var leftDistance = 'left: ' + ((j % cols) * s) + 'px;">';
+    var elem = movingPizzaTemplate + topDistance + leftDistance;
+    // Allocated each image to a set.
+    switch (j % 5) {
+      case 0:
+        createMovingPizzaSet("#moving-pizza-set-0", elem);
+        break;
+      case 1:
+        createMovingPizzaSet("#moving-pizza-set-1", elem);
+        break;
+      case 2:
+        createMovingPizzaSet("#moving-pizza-set-2", elem);
+        break;
+      case 3:
+        createMovingPizzaSet("#moving-pizza-set-3", elem);
+        break;
+      case 4:
+        createMovingPizzaSet("#moving-pizza-set-4", elem);
+        break;
+      default:
+        console.log("Error in inserting moving Pizza divs");
+    }
   }
+  // Set initial x positions for each moving-pizza-set.
   updatePositions();
 });
+

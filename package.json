@@ -1,0 +1,29 @@
+{
+  "name": "frontend-nano-degree-mobile-portfolio-tj",
+  "version": "0.0.1",
+  "description": "Frontend performance project",
+  "main": "index.js",
+  "scripts": {
+    "gulp": "gulp",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wiredforpictures/frontend-nanodegree-mobile-portfolio-tj.git"
+  },
+  "author": "Tim Jones",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wiredforpictures/frontend-nanodegree-mobile-portfolio-tj/issues"
+  },
+  "homepage": "https://github.com/wiredforpictures/frontend-nanodegree-mobile-portfolio-tj#readme",
+  "devDependencies": {
+    "del": "^2.1.0",
+    "gulp": "^3.9.0",
+    "gulp-csso": "^1.0.1",
+    "gulp-image-resize": "^0.8.0",
+    "gulp-imagemin": "^2.4.0",
+    "gulp-rename": "^1.2.2",
+    "run-sequence": "^1.1.5"
+  }
+}
