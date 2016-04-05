@@ -438,7 +438,8 @@ var resizePizzas = function(size) {
 
   // Iterates through pizza elements on the page and changes their widths.
   function changePizzaSizes(size) {
-    var allPizzas = document.querySelectorAll(".randomPizzaContainer");
+    // Use getElementsByClassName instead of querySelector
+    var allPizzas = document.getElementsByClassName("randomPizzaContainer");
     var newWidth = sizeSwitcher(size);
     // Set new width for each pizza image. Done at end of process, after all style calcs.
     for (var i = 0; i < allPizzas.length; i++) {
@@ -496,7 +497,8 @@ function updatePositions(e) {
   var bodyPosition = document.body.scrollTop / 1250;
   // Set x position using `transform` for each moving pizza image set
   for (var j = 0; j < 5; j++) {
-    var item = document.querySelector('#moving-pizza-set-' + j);
+    // Use getElementById instead of querySelector
+    var item = document.getElementById('moving-pizza-set-' + j);
     var phase = Math.sin(bodyPosition + (j % 5));
     item.style.transform = 'translateX(' + 100 * phase + 'px)';
   }
@@ -523,12 +525,14 @@ function createMovingPizzaContainers() {
     movingPizzasContainers = movingPizzasContainers + '<div id="moving-pizza-set-' + i + '"></div>';
   }
   // Add moving pizza container to the DOM.
-  document.querySelector("#movingPizzas1").insertAdjacentHTML('beforeend', movingPizzasContainers);
+  // Use getElementById instead of querySelector
+  document.getElementById("movingPizzas1").insertAdjacentHTML('beforeend', movingPizzasContainers);
 }
 
 // Helper function to create DOM nodes.
 function createMovingPizzaSet(id, elem) {
-  document.querySelector(id).insertAdjacentHTML('beforeend', elem);
+  // Use getElementById instead of querySelector
+  document.getElementById(id).insertAdjacentHTML('beforeend', elem);
 }
 
 // Generates the sliding pizzas when the page loads.
@@ -551,19 +555,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Allocated each image to a set.
     switch (j % 5) {
       case 0:
-        createMovingPizzaSet("#moving-pizza-set-0", elem);
+        createMovingPizzaSet("moving-pizza-set-0", elem);
         break;
       case 1:
-        createMovingPizzaSet("#moving-pizza-set-1", elem);
+        createMovingPizzaSet("moving-pizza-set-1", elem);
         break;
       case 2:
-        createMovingPizzaSet("#moving-pizza-set-2", elem);
+        createMovingPizzaSet("moving-pizza-set-2", elem);
         break;
       case 3:
-        createMovingPizzaSet("#moving-pizza-set-3", elem);
+        createMovingPizzaSet("moving-pizza-set-3", elem);
         break;
       case 4:
-        createMovingPizzaSet("#moving-pizza-set-4", elem);
+        createMovingPizzaSet("moving-pizza-set-4", elem);
         break;
       default:
         console.log("Error in inserting moving Pizza divs");

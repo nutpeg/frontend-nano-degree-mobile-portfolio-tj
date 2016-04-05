@@ -37,7 +37,9 @@ Time to resize pizzas now ~1.25ms
 1.  In `changePizzaSizes()`, the call to 
     `document.querySelectorAll(".randomPizzaContainer")` is made 4 times, 
     when only once is necessary. Now done once, _before_ the for loop.
-2.  Work done by `determineDx` is unnecessary, so replaced by:
+2.  Replace `querySelectorAll` with `getElementsByClassName` in 
+    `changePizzaSizes()` function.
+3.  Work done by `determineDx` is unnecessary, so replaced by:
     1.  Determining width of containing `#randomPizzas` div once, and only 
         once (previously calculated for every `.randomPizzaContainer`).
     2.  Similarly determining new width for `.randomPizzaContainer` by call
@@ -60,9 +62,11 @@ Improved 'Average time to generate last 10 frames' from ~25ms to ~0.13ms.
 4.  `bodyPosition = document.body.scrollTop / 125;` taken outside the loop 
     in which transform is calculated, as only need to do this once.
 5.  Small refactorings to reduce repetition.
+6.  Replace `querySelector` with `getElementById` in `updatePositions()`,
+    `createMovingPizzaContainers()`, and `createMovingPizzaSet` functions.
   
 #### First render of pizzas
 
-1.  Line 474 (now 462), which gets a DOM reference to the '#randomPizzas' node,
+1.  Line 474 (now 463), which gets a DOM reference to the '#randomPizzas' node,
     moved to before the for loop. Only need to do this once.
     
